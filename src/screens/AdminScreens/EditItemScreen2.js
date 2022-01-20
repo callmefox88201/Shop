@@ -245,9 +245,9 @@ export default function EditItemScreen2({ navigation, route }) {
                     marginHorizontal: 5,
                   }}
                   keyboardType="numeric"
-                  onChangeText={(quantity) => setQuantity(quantity)}
+                  onChangeText={(quantity) => setQuantity(parseInt(quantity))}
                   maxLength={5}
-                  defaultValue={quantity}
+                  defaultValue={"" + quantity}
                 />
               </View>
             </View>

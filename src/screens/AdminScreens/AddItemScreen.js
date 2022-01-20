@@ -236,7 +236,7 @@ export default function AddItemScreen({ navigation }) {
                 justifyContent: "center",
               }}
               keyboardType="numeric"
-              onChangeText={(quantity) => setQuantity(quantity)}
+              onChangeText={(quantity) => setQuantity(parseInt(quantity))}
               maxLength={5}
             />
           </View>

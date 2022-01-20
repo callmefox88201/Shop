@@ -74,6 +74,7 @@ export default function EditItemScreen({ navigation }) {
               borderWidth: 1,
               padding: 5,
               marginHorizontal: 10,
+              marginBottom: 10,
             }}
             onPress={() => navigation.navigate("EditItemScreen2", { item })}
           >
