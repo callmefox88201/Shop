@@ -8,7 +8,6 @@ import {
   StyleSheet,
   Image,
 } from "react-native";
-import storage from "@react-native-firebase/storage";
 import database from "@react-native-firebase/database";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 

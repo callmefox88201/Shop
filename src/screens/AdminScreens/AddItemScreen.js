@@ -144,8 +144,9 @@ export default function AddItemScreen({ navigation }) {
               >
                 <Picker.Item label="Table" value="Table" />
                 <Picker.Item label="Chair" value="Chair" />
-                <Picker.Item label="Bed" value="Bed" />
+                <Picker.Item label="Cupboard" value="Cupboard" />
                 <Picker.Item label="Wardrobe" value="Wardrobe" />
+                <Picker.Item label="Bed" value="Bed" />
                 <Picker.Item label="Other" value="Other" />
               </Picker>
             </View>
