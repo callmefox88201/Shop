@@ -1,5 +1,5 @@
-import { StatusBar } from "expo-status-bar";
 import React, { useState, useContext } from "react";
+import { StatusBar } from "expo-status-bar";
 import {
   View,
   Text,
@@ -7,17 +7,17 @@ import {
   Image,
   StyleSheet,
   TextInput,
-  Button,
   ScrollView,
-  ImageBackground,
+  Dimensions,
 } from "react-native";
-import { AuthContext } from "../AuthScreens/AuthProvider";
-import FormButton from "../AuthScreens/FormButton";
 import ImagePicker from "react-native-image-crop-picker";
 import storage from "@react-native-firebase/storage";
 import database from "@react-native-firebase/database";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { Picker } from "@react-native-picker/picker";
+
+const screenHeight = Dimensions.get("window").height;
+const screenWidth = Dimensions.get("window").width;
 
 export default function AddItemScreen({ navigation }) {
   const [image, setImage] = useState("temp");
@@ -65,10 +65,10 @@ export default function AddItemScreen({ navigation }) {
         imageUrl: downloadUri,
         name: name,
         type: type,
-        price: price,
+        price: parseFloat(price),
         like: 0,
         popular: false,
-        storageQuantity: quantity,
+        storageQuantity: parseInt(quantity),
         description: description,
       });
       setUploading(false);
@@ -80,90 +80,61 @@ export default function AddItemScreen({ navigation }) {
   };
 
   return (
-    <View style={{ flex: 1, backgroundColor: "#E7F2F8" }}>
-      <View style={styles.header}>
-        <View style={styles.headerBtn}>
-          <MaterialCommunityIcons
-            name="chevron-left"
-            size={25}
-            onPress={navigation.goBack}
-          />
+    <View style={styles.container}>
+      <ScrollView>
+        <View style={styles.header}>
+          <View style={styles.headerBtn}>
+            <MaterialCommunityIcons
+              name="chevron-left"
+              size={40}
+              onPress={navigation.goBack}
+              color="#fff"
+            />
+          </View>
+          <Text style={styles.helloWorldStyle}>Add product</Text>
         </View>
-        <Text
-          style={{ fontWeight: "bold", fontSize: 25, marginHorizontal: 80 }}
-        >
-          Add Product
-        </Text>
-      </View>
-      <ScrollView showsVerticalScrollIndicator={false}>
-        <TouchableOpacity
-          style={{
-            borderRadius: 12,
-            borderWidth: 1,
-            marginHorizontal: 20,
-            height: 300,
-            width: 300,
-            alignSelf: "center",
-          }}
-          onPress={() => choosePhotoFromLibrary()}
-        >
-          <Image style={styles.backgroundImage} source={{ uri: image }} />
-        </TouchableOpacity>
 
-        <View style={styles.detailsContainer}>
-          <View
+        <View
+          style={{
+            backgroundColor: "#FFF",
+            top: -50,
+            borderRadius: 50,
+            height: screenHeight * 0.8,
+            marginHorizontal: 20,
+            width: screenWidth * 0.9,
+          }}
+        >
+          <TouchableOpacity
             style={{
-              flex: 1,
-              flexDirection: "row",
+              width: 150,
+              height: 150,
+              borderRadius: 75,
+              backgroundColor: "#AEAEAE",
+              alignSelf: "center",
+              top: -70,
             }}
+            onPress={() => choosePhotoFromLibrary()}
           >
-            <Text
-              style={{
-                fontWeight: "bold",
-                fontSize: 17,
-                color: "#122636",
-                width: "45%",
-              }}
-            >
-              Product's name:
-            </Text>
+            <Image style={styles.backgroundImage} source={{ uri: image }} />
+          </TouchableOpacity>
+          <View style={styles.inputText}>
+            <Text style={styles.name}>Product's name:</Text>
             <TextInput
-              style={{
-                borderRadius: 10,
-                borderWidth: 1,
-                width: 170,
-                fontSize: 17,
-                textAlign: "center",
-                justifyContent: "center",
-              }}
+              placeholder="Name"
+              style={styles.editProduct}
               onChangeText={(name) => setName(name)}
               maxLength={15}
             />
           </View>
-          <View
-            style={{
-              flex: 1,
-              flexDirection: "row",
-              alignItems: "center",
-              height: 50,
-              marginVertical: 10,
-            }}
-          >
-            <Text
-              style={{
-                fontWeight: "bold",
-                fontSize: 17,
-                color: "#122636",
-                width: "45%",
-              }}
-            >
-              Type
-            </Text>
+
+          <View style={styles.inputText}>
+            <Text style={styles.name}>Product's type:</Text>
             <View
               style={{
                 borderWidth: 1,
                 borderColor: "#999",
-                width: 170,
+                width: 200,
+                borderRadius: 10,
               }}
             >
               <Picker
@@ -179,105 +150,63 @@ export default function AddItemScreen({ navigation }) {
               </Picker>
             </View>
           </View>
-          <View
-            style={{
-              flex: 1,
-              flexDirection: "row",
-              marginVertical: 10,
-            }}
-          >
-            <Text
+
+          <View style={[styles.inputText, { justifyContent: "center" }]}>
+            <View style={{ width: "50%", flexDirection: "row" }}>
+              <Text style={styles.name}>Price:</Text>
+              <TextInput
+                keyboardType="numeric"
+                onChangeText={(price) => setPrice(price)}
+                maxLength={5}
+                style={[styles.editProduct, { width: 75, marginLeft: 25 }]}
+              />
+            </View>
+            <View
               style={{
-                fontWeight: "bold",
-                fontSize: 17,
-                color: "#122636",
-                width: "45%",
+                width: "50%",
+                flexDirection: "row",
+                justifyContent: "space-between",
               }}
             >
-              Product's price:
-            </Text>
-            <TextInput
-              style={{
-                borderRadius: 10,
-                borderWidth: 1,
-                width: "20%",
-                fontSize: 20,
-                textAlign: "center",
-                justifyContent: "center",
-              }}
-              keyboardType="numeric"
-              onChangeText={(price) => setPrice(price)}
-              maxLength={5}
-            />
+              <Text style={styles.name}>Quantity:</Text>
+              <TextInput
+                keyboardType="numeric"
+                onChangeText={(quantity) => setQuantity(quantity)}
+                maxLength={5}
+                style={[styles.editProduct, { width: 75 }]}
+              />
+            </View>
           </View>
-          <View
-            style={{
-              flex: 1,
-              flexDirection: "row",
-            }}
-          >
-            <Text
-              style={{
-                fontWeight: "bold",
-                fontSize: 17,
-                color: "#122636",
-                width: "45%",
-              }}
-            >
-              Product's quantity:
+
+          <View style={{ height: 150, flexDirection: "column", top: -50 }}>
+            <Text style={[styles.name, { margin: 10 }]}>
+              Product's description
             </Text>
             <TextInput
-              style={{
-                borderRadius: 10,
-                borderWidth: 1,
-                width: "20%",
-                fontSize: 20,
-                textAlign: "center",
-                justifyContent: "center",
-              }}
-              keyboardType="numeric"
-              onChangeText={(quantity) => setQuantity(parseInt(quantity))}
-              maxLength={5}
-            />
-          </View>
-          <View>
-            <Text
-              style={{
-                marginVertical: 10,
-                fontWeight: "bold",
-                fontSize: 17,
-                color: "#122636",
-              }}
-            >
-              Description
-            </Text>
-            <TextInput
-              style={{
-                color: "#000",
-                fontSize: 17,
-                textAlign: "left",
-                textAlignVertical: "top",
-                borderRadius: 10,
-                borderWidth: 1,
-                padding: 5,
-                height: 140,
-              }}
+              placeholder="Description"
+              style={[
+                styles.editProduct,
+                {
+                  height: 100,
+                  width: "80%",
+                  alignSelf: "center",
+                  borderRadius: 10,
+                  textAlignVertical: "top",
+                },
+              ]}
               multiline={true}
               onChangeText={(description) => setDescription(description)}
               maxLength={300}
             />
           </View>
-        </View>
-        <View style={{ margin: 20 }}>
           <TouchableOpacity
             style={{
-              width: 70,
-              height: 35,
-              backgroundColor: "#74BDCB",
-              alignSelf: "flex-end",
-              borderRadius: 14,
+              marginHorizontal: 25,
+              padding: 10,
+              borderRadius: 10,
+              backgroundColor: "#122636",
               alignItems: "center",
-              justifyContent: "center",
+              top: -20,
             }}
             onPress={() => {
               if (validate()) {
@@ -285,36 +214,78 @@ export default function AddItemScreen({ navigation }) {
               }
             }}
           >
-            <Text>Add</Text>
+            <Text style={{ fontSize: 17, fontWeight: "bold", color: "white" }}>
+              POST
+            </Text>
           </TouchableOpacity>
         </View>
       </ScrollView>
-      <StatusBar style="auto" />
+      <StatusBar style="light" />
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  backgroundImage: {
-    marginHorizontal: 20,
-    height: 300,
-    borderRadius: 15,
-    width: 300,
-    alignSelf: "center",
-  },
-  header: {
-    paddingTop: 30,
-    flexDirection: "row",
+  container: {
+    flex: 1,
+    alignItems: "baseline",
     justifyContent: "flex-start",
-    alignItems: "center",
-    paddingHorizontal: 10,
+  },
+  inputText: {
+    top: -50,
+    justifyContent: "space-between",
+    flexDirection: "row",
+    height: 40,
+    fontSize: 16,
+    marginVertical: 16,
+    marginHorizontal: 10,
+  },
+  helloWorldStyle: {
+    // paddingLeft: 30,
+    // paddingTop: 50,
+    marginLeft: 55,
+    marginTop: 50,
+    fontSize: 30,
+    fontWeight: "bold",
+    color: "white",
+  },
+  name: {
+    color: "gray",
+    paddingVertical: 10,
+    fontSize: 16,
+  },
+  editProduct: {
+    width: 200,
+    borderRadius: 10,
+    padding: 10,
+    borderWidth: 1,
+    borderColor: "#122636",
   },
   headerBtn: {
     height: 50,
     width: 50,
-    borderRadius: 10,
     justifyContent: "center",
     alignItems: "center",
+    marginTop: 45,
   },
-  detailsContainer: { flex: 1, paddingHorizontal: 20, marginTop: 20 },
+  header: {
+    flexDirection: "row",
+    justifyContent: "flex-start",
+    // alignItems: "center",
+    paddingHorizontal: 10,
+    backgroundColor: "#122636",
+    width: screenWidth,
+    height: (screenHeight * 1) / 3,
+    borderBottomLeftRadius: 50,
+    borderBottomRightRadius: 50,
+  },
+  backgroundImage: {
+    marginHorizontal: 20,
+    height: 150,
+    borderRadius: 75,
+    width: 150,
+    alignSelf: "center",
+    borderWidth: 1,
+    borderColor: "#aeaeae",
+  },
 });

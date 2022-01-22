@@ -22,8 +22,8 @@ export default function Routes() {
   if (initializing) return null;
 
   return (
-      <NavigationContainer>
-        {user ? <AdminStack /> : <AuthStack />}
-      </NavigationContainer>
+    <NavigationContainer>
+      <AdminStack />
+    </NavigationContainer>
   );
 }

@@ -67,28 +67,46 @@ export default function EditItemScreen({ navigation }) {
         }}
         renderItem={({ item, index }) => (
           <TouchableOpacity
-            style={{
-              flex: 1,
-              flexDirection: "row",
-              borderRadius: 10,
-              borderWidth: 1,
-              padding: 5,
-              marginHorizontal: 10,
-              marginBottom: 10,
-            }}
             onPress={() => navigation.navigate("EditItemScreen2", { item })}
           >
-            <Image
-              style={styles.backgroundImage}
-              source={{ uri: item.imageUrl }}
-            />
-            <View>
-              <Text style={{ fontSize: 20 }}>name: {item.name}</Text>
-              <Text style={{ fontSize: 20 }}>type: {item.type}</Text>
-              <Text style={{ fontSize: 20 }}>price: {item.price}</Text>
-              <Text style={{ fontSize: 20 }}>
-                quantity: {item.storageQuantity}
-              </Text>
+            <View
+              style={{
+                height: 80,
+                elevation: 15,
+                borderRadius: 20,
+                backgroundColor: "white",
+                marginVertical: 10,
+                marginHorizontal: 20,
+                // paddingHorizontal: 10,
+                flexDirection: "row",
+                alignItems: "center",
+              }}
+            >
+              <Image
+                style={styles.backgroundImage}
+                source={{ uri: item.imageUrl }}
+              />
+              <View
+                style={{
+                  height: 100,
+                  marginLeft: 10,
+                  paddingVertical: 20,
+                  flex: 1,
+                }}
+              >
+                <Text style={{ fontWeight: "bold", fontSize: 16 }}>
+                  {item.name}
+                </Text>
+                <Text style={{ fontSize: 14, color: "grey" }}>{item.type}</Text>
+                <Text style={{ fontSize: 17, fontWeight: "bold" }}>
+                  ${item.price}
+                </Text>
+              </View>
+              <View style={{ width: 120 }}>
+                <Text style={{ fontSize: 17 }}>
+                  Quantity: {item.storageQuantity}
+                </Text>
+              </View>
             </View>
           </TouchableOpacity>
         )}
@@ -114,10 +132,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   backgroundImage: {
-    marginHorizontal: 20,
-    height: 120,
-    borderRadius: 15,
-    width: 120,
-    alignSelf: "center",
+    height: 80,
+    width: 80,
   },
 });

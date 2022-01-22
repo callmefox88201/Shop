@@ -1,5 +1,5 @@
 import { StatusBar } from "expo-status-bar";
-import React, { useState, useContext } from "react";
+import React, { useState } from "react";
 import {
   View,
   Text,
@@ -8,12 +8,15 @@ import {
   StyleSheet,
   TextInput,
   ScrollView,
+  Dimensions,
 } from "react-native";
 import ImagePicker from "react-native-image-crop-picker";
 import storage from "@react-native-firebase/storage";
 import database from "@react-native-firebase/database";
 import { MaterialCommunityIcons, AntDesign } from "@expo/vector-icons";
 import { Picker } from "@react-native-picker/picker";
+const screenHeight = Dimensions.get("window").height;
+const screenWidth = Dimensions.get("window").width;
 
 export default function EditItemScreen2({ navigation, route }) {
   const { item } = route.params;
@@ -68,10 +71,10 @@ export default function EditItemScreen2({ navigation, route }) {
         imageUrl: uploadUri,
         name: name,
         type: type,
-        price: price,
+        price: parseFloat(price),
         like: like,
         popular: popular,
-        storageQuantity: quantity,
+        storageQuantity: parseInt(quantity),
         description: description,
       });
       setUploading(false);
@@ -83,95 +86,76 @@ export default function EditItemScreen2({ navigation, route }) {
   };
 
   return (
-    <View style={{ flex: 1, backgroundColor: "#E7F2F8" }}>
-      <View style={styles.header}>
-        <View style={styles.headerBtn}>
-          <MaterialCommunityIcons
-            name="chevron-left"
-            size={25}
-            onPress={navigation.goBack}
-          />
-        </View>
-        <Text
-          style={{ fontWeight: "bold", fontSize: 25, marginHorizontal: 80 }}
-        >
-          Edit Product
-        </Text>
-      </View>
-      <ScrollView showsVerticalScrollIndicator={false}>
-        <TouchableOpacity
-          style={{
-            borderRadius: 12,
-            borderWidth: 1,
-            marginHorizontal: 20,
-            height: 300,
-            width: 300,
-            alignSelf: "center",
-          }}
-          onPress={() => choosePhotoFromLibrary()}
-        >
-          <Image style={styles.backgroundImage} source={{ uri: image }} />
-        </TouchableOpacity>
-
-        <View style={styles.detailsContainer}>
-          <View
+    <View
+      style={{ flex: 1, alignItems: "baseline", justifyContent: "flex-start" }}
+    >
+      <ScrollView>
+        <View style={styles.header}>
+          <View style={styles.headerBtn}>
+            <MaterialCommunityIcons
+              name="chevron-left"
+              size={40}
+              onPress={navigation.goBack}
+              color="#fff"
+            />
+          </View>
+          <Text
             style={{
-              flex: 1,
-              flexDirection: "row",
+              marginLeft: 55,
+              marginTop: 40,
+              fontSize: 30,
+              fontWeight: "bold",
+              color: "white",
             }}
           >
-            <Text
-              style={{
-                fontWeight: "bold",
-                fontSize: 17,
-                color: "#122636",
-                width: "45%",
-              }}
-            >
-              Product's name:
-            </Text>
+            Edit Product
+          </Text>
+        </View>
+        <View
+          style={{
+            backgroundColor: "#FFF",
+            top: -50,
+            borderRadius: 50,
+            height: screenHeight * 0.8,
+            marginHorizontal: 20,
+            width: screenWidth * 0.9,
+          }}
+        >
+          <TouchableOpacity
+            style={{
+              width: 200,
+              height: 200,
+              borderRadius: 100,
+              backgroundColor: "#AEAEAE",
+              alignSelf: "center",
+              top: -100,
+            }}
+            onPress={() => choosePhotoFromLibrary()}
+          >
+            <Image style={styles.backgroundImage} source={{ uri: image }} />
+          </TouchableOpacity>
+          <View style={styles.inputText}>
+            <Text style={styles.name}>Product's name:</Text>
             <TextInput
-              style={{
-                borderRadius: 10,
-                borderWidth: 1,
-                width: 170,
-                fontSize: 17,
-                textAlign: "center",
-                justifyContent: "center",
-              }}
-              defaultValue={name}
+              placeholder="Name"
+              style={styles.editProduct}
+              defaultValue={item.name}
               onChangeText={(name) => setName(name)}
               maxLength={15}
             />
           </View>
-          <View
-            style={{
-              flex: 1,
-              flexDirection: "row",
-              alignItems: "center",
-              height: 50,
-              marginVertical: 10,
-            }}
-          >
-            <Text
-              style={{
-                fontWeight: "bold",
-                fontSize: 17,
-                color: "#122636",
-                width: "45%",
-              }}
-            >
-              Type
-            </Text>
+          <View style={styles.inputText}>
+            <Text style={styles.name}>Product's type:</Text>
             <View
               style={{
                 borderWidth: 1,
                 borderColor: "#999",
-                width: 170,
+                width: 200,
+                borderRadius: 10,
               }}
             >
               <Picker
-                selectedValue={type}
+                selectedValue={item.type}
                 onValueChange={(value, index) => setType(value)}
                 mode="dropdown"
               >
@@ -183,134 +167,89 @@ export default function EditItemScreen2({ navigation, route }) {
               </Picker>
             </View>
           </View>
-          <View style={{ flex: 1, flexDirection: "row" }}>
-            <View>
-              <View
-                style={{
-                  flex: 1,
-                  flexDirection: "row",
-                  marginVertical: 10,
-                }}
-              >
-                <Text
-                  style={{
-                    fontWeight: "bold",
-                    fontSize: 17,
-                    color: "#122636",
-                    width: "55%",
-                  }}
-                >
-                  Product's price:
-                </Text>
-                <TextInput
-                  style={{
-                    borderRadius: 10,
-                    borderWidth: 1,
-                    width: "20%",
-                    fontSize: 20,
-                    textAlign: "center",
-                    justifyContent: "center",
-                    marginHorizontal: 5,
-                  }}
-                  keyboardType="numeric"
-                  onChangeText={(price) => setPrice(price)}
-                  maxLength={5}
-                  defaultValue={price}
-                />
-              </View>
-              <View
-                style={{
-                  flex: 1,
-                  flexDirection: "row",
-                }}
-              >
-                <Text
-                  style={{
-                    fontWeight: "bold",
-                    fontSize: 17,
-                    color: "#122636",
-                    width: "55%",
-                  }}
-                >
-                  Product's quantity:
-                </Text>
-                <TextInput
-                  style={{
-                    borderRadius: 10,
-                    borderWidth: 1,
-                    width: "20%",
-                    fontSize: 20,
-                    textAlign: "center",
-                    justifyContent: "center",
-                    marginHorizontal: 5,
-                  }}
-                  keyboardType="numeric"
-                  onChangeText={(quantity) => setQuantity(parseInt(quantity))}
-                  maxLength={5}
-                  defaultValue={"" + quantity}
-                />
-              </View>
-            </View>
-            <TouchableOpacity
-              style={{
-                alignSelf: "center",
-                borderRadius: 30,
-                borderWidth: 1,
-                width: 50,
-                height: 50,
-                alignItems: "center",
-                justifyContent: "center",
-              }}
-              onPress={() => {
-                setPopular(!popular);
-              }}
-            >
-              <AntDesign
-                name="star"
-                size={24}
-                color={popular ? "#FAD02C" : "black"}
+          <View style={[styles.inputText, { justifyContent: "center" }]}>
+            <View style={{ width: "50%", flexDirection: "row" }}>
+              <Text style={styles.name}>Price:</Text>
+              <TextInput
+                keyboardType="numeric"
+                onChangeText={(price) => setPrice(price)}
+                maxLength={5}
+                defaultValue={"" + item.price}
+                style={[styles.editProduct, { width: 75, marginLeft: 25 }]}
               />
-            </TouchableOpacity>
-          </View>
-          <View>
-            <Text
+            </View>
+            <View
               style={{
-                marginVertical: 10,
-                fontWeight: "bold",
-                fontSize: 17,
-                color: "#122636",
+                width: "50%",
+                flexDirection: "row",
+                justifyContent: "space-between",
               }}
             >
-              Description
-            </Text>
+              <Text style={styles.name}>Quantity:</Text>
+              <TextInput
+                keyboardType="numeric"
+                defaultValue={"" + item.storageQuantity}
+                onChangeText={(quantity) => setQuantity(quantity)}
+                maxLength={5}
+                style={[styles.editProduct, { width: 75 }]}
+              />
+            </View>
+          </View>
+          <View style={{ height: 150, flexDirection: "column", top: -80 }}>
+            <View
+              style={{ flexDirection: "row", justifyContent: "space-between" }}
+            >
+              <Text style={[styles.name, { margin: 10 }]}>
+                Product's description
+              </Text>
+              <TouchableOpacity
+                style={{
+                  alignSelf: "center",
+                  borderRadius: 25,
+                  borderWidth: 1,
+                  width: 50,
+                  height: 50,
+                  alignItems: "center",
+                  justifyContent: "center",
+                  marginRight: 30,
+                }}
+                onPress={() => {
+                  setPopular(!popular);
+                }}
+              >
+                <AntDesign
+                  name="star"
+                  size={24}
+                  color={popular ? "#FAD02C" : "black"}
+                />
+              </TouchableOpacity>
+            </View>
             <TextInput
-              style={{
-                color: "#000",
-                fontSize: 17,
-                textAlign: "left",
-                textAlignVertical: "top",
-                borderRadius: 10,
-                borderWidth: 1,
-                padding: 5,
-                height: 140,
-              }}
+              placeholder="Description"
+              style={[
+                styles.editProduct,
+                {
+                  height: 100,
+                  width: "80%",
+                  alignSelf: "center",
+                  borderRadius: 10,
+                  textAlignVertical: "top",
+                },
+              ]}
               multiline={true}
               onChangeText={(description) => setDescription(description)}
               maxLength={300}
-              defaultValue={description}
+              defaultValue={item.description}
             />
           </View>
-        </View>
-        <View style={{ margin: 20 }}>
           <TouchableOpacity
             style={{
-              width: 70,
-              height: 35,
-              backgroundColor: "#74BDCB",
-              alignSelf: "flex-end",
-              borderRadius: 14,
+              marginHorizontal: 25,
+              padding: 10,
+              borderRadius: 10,
+              backgroundColor: "#122636",
               alignItems: "center",
-              justifyContent: "center",
+              top: -50,
             }}
             onPress={() => {
               if (validate()) {
@@ -318,11 +257,14 @@ export default function EditItemScreen2({ navigation, route }) {
               }
             }}
           >
-            <Text>Post</Text>
+            <Text style={{ fontSize: 17, fontWeight: "bold", color: "white" }}>
+              POST
+            </Text>
           </TouchableOpacity>
         </View>
       </ScrollView>
-      <StatusBar style="auto" />
+
+      <StatusBar style="light" />
     </View>
   );
 }
@@ -330,24 +272,51 @@ export default function EditItemScreen2({ navigation, route }) {
 const styles = StyleSheet.create({
   backgroundImage: {
     marginHorizontal: 20,
-    height: 300,
-    borderRadius: 15,
-    width: 300,
+    height: 200,
+    borderRadius: 100,
+    width: 200,
     alignSelf: "center",
+    borderWidth: 1,
+    borderColor: "#AEAEAE",
   },
   header: {
-    paddingTop: 30,
     flexDirection: "row",
     justifyContent: "flex-start",
-    alignItems: "center",
+    // alignItems: "center",
     paddingHorizontal: 10,
+    backgroundColor: "#122636",
+    width: screenWidth,
+    height: (screenHeight * 1) / 3,
+    borderBottomLeftRadius: 50,
+    borderBottomRightRadius: 50,
   },
   headerBtn: {
     height: 50,
     width: 50,
-    borderRadius: 10,
     justifyContent: "center",
     alignItems: "center",
+    marginTop: 40,
   },
   detailsContainer: { flex: 1, paddingHorizontal: 20, marginTop: 20 },
+  inputText: {
+    top: -80,
+    justifyContent: "space-between",
+    flexDirection: "row",
+    height: 40,
+    fontSize: 16,
+    marginVertical: 16,
+    marginHorizontal: 10,
+  },
+  editProduct: {
+    width: 200,
+    borderRadius: 10,
+    padding: 10,
+    borderWidth: 1,
+    borderColor: "#122636",
+  },
+  name: {
+    color: "gray",
+    paddingVertical: 10,
+    fontSize: 16,
+  },
 });
